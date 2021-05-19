@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import com.example.bankingapp.Model.CustomerModel;
 import com.example.bankingapp.Model.TransactionModel;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,8 +102,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<CustomerModel> selectAllCustomer() {
-        List<CustomerModel> resultSet = new ArrayList<>();
+    public ArrayList<CustomerModel> selectAllCustomer() {
+        ArrayList<CustomerModel> resultSet = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         String selectQuery = "SELECT * FROM " + CUSTOMER_TABLE + ";";
         Cursor cursor = db.rawQuery(selectQuery, null);
