@@ -126,6 +126,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         String selectQuery = "SELECT * FROM " + CUSTOMER_TABLE + " WHERE " + COLUMN_CUSTOMER_ID + " = " + id + ";";
         Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
         String name = cursor.getString(1);
         String email = cursor.getString(2);
         float balance = cursor.getFloat(3);
@@ -146,6 +147,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return insert != -1;
     }
 
+    public ArrayList<TransactionModel> selectAllTransaction() {
+        ArrayList<TransactionModel> resultSet = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TRANSACTION_TABLE + ";";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                String from = selectCustomer(cursor.getInt(1)).getName();
+                String to = selectCustomer(cursor.getInt(2)).getName();
+                float amount = cursor.getFloat(3);
+                resultSet.add(new TransactionModel(id, from, to , amount));
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        cursor.close();
+        return resultSet;
+    }
+
+    @Deprecated
+    //need to update the add method to the cv
+    //search teh user database to get the id then isert into the transacriton
+    //database
     public boolean addNewTransaction(TransactionModel transaction){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();

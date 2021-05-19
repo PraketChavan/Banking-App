@@ -1,8 +1,9 @@
 package com.example.bankingapp.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.bankingapp.Adapters.RecyclerViewAdapter;
+import com.example.bankingapp.Adapters.CustomerRecyclerAdapter;
 import com.example.bankingapp.Database.DatabaseHelper;
 import com.example.bankingapp.Model.CustomerModel;
 import com.example.bankingapp.R;
@@ -49,9 +50,8 @@ public class ScrollingActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
+                Intent intent = new Intent(ScrollingActivity.this, TransactionHistory.class);
+                startActivity(intent);
             }
         });
         customerList = db.selectAllCustomer();
@@ -59,7 +59,7 @@ public class ScrollingActivity extends AppCompatActivity {
     }
 
     private void setAdapter() {
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(customerList);
+        CustomerRecyclerAdapter adapter = new CustomerRecyclerAdapter(customerList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

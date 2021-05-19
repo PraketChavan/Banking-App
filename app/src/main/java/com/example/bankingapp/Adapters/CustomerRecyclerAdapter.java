@@ -14,11 +14,11 @@ import com.example.bankingapp.R;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder>{
+public class CustomerRecyclerAdapter extends RecyclerView.Adapter<CustomerRecyclerAdapter.MyViewHolder>{
 
     private ArrayList<CustomerModel> customerList;
 
-    public RecyclerViewAdapter(ArrayList<CustomerModel> customerList) {
+    public CustomerRecyclerAdapter(ArrayList<CustomerModel> customerList) {
         this.customerList = customerList;
     }
 
@@ -35,13 +35,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @NonNull
     @Override
-    public RecyclerViewAdapter.MyViewHolder onCreateViewHolder(@NonNull  ViewGroup parent, int viewType) {
+    public CustomerRecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull  ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_item, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CustomerRecyclerAdapter.MyViewHolder holder, int position) {
         CustomerModel customer = customerList.get(position);
         holder.username.setText(customer.getName());
         holder.email.setText(customer.getEmail());

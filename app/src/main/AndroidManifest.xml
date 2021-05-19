@@ -9,7 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BankingApp">
-        <activity android:name=".Activities.TransactionHistory"></activity>
+        <activity android:name=".Activities.TransactionHistory"
+                  android:parentActivityName=".Activities.ScrollingActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.ScrollingActivity" />
+        </activity>
         <activity
             android:name=".Activities.ScrollingActivity"
             android:label="@string/app_name"
