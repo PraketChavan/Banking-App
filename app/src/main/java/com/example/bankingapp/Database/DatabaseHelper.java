@@ -59,6 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void initialiseData() {
 
         SQLiteDatabase db = getWritableDatabase();
+
         Cursor cursor = db.rawQuery("SELECT * FROM " + CUSTOMER_TABLE, null);
         if (!cursor.moveToFirst()) {
             db.execSQL("INSERT INTO " + CUSTOMER_TABLE + "(" + COLUMN_CUSTOMER_NAME + ", " + COLUMN_CUSTOMER_EMAIL + ", " +
@@ -88,15 +89,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor = db.rawQuery("SELECT * FROM " + TRANSACTION_TABLE, null);
         if (!cursor.moveToFirst()) {
             db.execSQL("INSERT INTO " + TRANSACTION_TABLE + "(" + COLUMN_TRANSACTION_TO + ", " + COLUMN_TRANSACTION_FROM + ", " +
-                    COLUMN_TRANSACTION_FROM + ") VALUES (1, 3, 70.00);");
+                    COLUMN_TRANSACTION_AMOUNT + ") VALUES (1, 3, 70.00);");
             db.execSQL("INSERT INTO " + TRANSACTION_TABLE + "(" + COLUMN_TRANSACTION_TO + ", " + COLUMN_TRANSACTION_FROM + ", " +
-                    COLUMN_TRANSACTION_FROM + ") VALUES (4, 6, 83.00);");
+                    COLUMN_TRANSACTION_AMOUNT + ") VALUES (4, 6, 83.00);");
             db.execSQL("INSERT INTO " + TRANSACTION_TABLE + "(" + COLUMN_TRANSACTION_TO + ", " + COLUMN_TRANSACTION_FROM + ", " +
-                    COLUMN_TRANSACTION_FROM + ")VALUES (2, 8, 999.99);");
+                    COLUMN_TRANSACTION_AMOUNT + ")VALUES (2, 8, 999.99);");
             db.execSQL("INSERT INTO " + TRANSACTION_TABLE + "(" + COLUMN_TRANSACTION_TO + ", " + COLUMN_TRANSACTION_FROM + ", " +
-                    COLUMN_TRANSACTION_FROM + ") VALUES (9, 5, 100.50);");
+                    COLUMN_TRANSACTION_AMOUNT + ") VALUES (9, 5, 100.50);");
             db.execSQL("INSERT INTO " + TRANSACTION_TABLE + "(" + COLUMN_TRANSACTION_TO + ", " + COLUMN_TRANSACTION_FROM + ", " +
-                    COLUMN_TRANSACTION_FROM + ") VALUES (5, 3, 100.40);");
+                    COLUMN_TRANSACTION_AMOUNT + ") VALUES (5, 3, 100.40);");
         }
         cursor.close();
         db.close();
@@ -126,13 +127,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         String selectQuery = "SELECT * FROM " + CUSTOMER_TABLE + " WHERE " + COLUMN_CUSTOMER_ID + " = " + id + ";";
         Cursor cursor = db.rawQuery(selectQuery, null);
-        cursor.moveToFirst();
-        String name = cursor.getString(1);
-        String email = cursor.getString(2);
-        float balance = cursor.getFloat(3);
-        db.close();
-        cursor.close();
-        return new CustomerModel(id, name, email, balance);
+        if (cursor.moveToFirst()) {
+            String name = cursor.getString(1);
+            String email = cursor.getString(2);
+            float balance = cursor.getFloat(3);
+            db.close();
+            cursor.close();
+            return new CustomerModel(id, name, email, balance);
+        }
+        return null;
     }
 
     public boolean addNewCustomer(CustomerModel customer) {
@@ -164,6 +167,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         db.close();
         cursor.close();
+        return resultSet;
+    }
+
+    public void delete(){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DELETE FROM CUSTOMER_TABLE WHERE CID < 0");
+        db.execSQL("DELETE FROM TRANSACTION_TABLE WHERE tID < 0");
+    }
+    public ArrayList<TransactionModel> selectCustomerTransaction(int customerId) {
+        ArrayList<TransactionModel> resultSet = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TRANSACTION_TABLE + " WHERE " + COLUMN_TRANSACTION_TO + " = " + customerId +
+                " OR " + COLUMN_TRANSACTION_FROM + " = " + customerId  + ";";
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()){
+            do {
+                int id  = cursor.getInt(0);
+                String from = selectCustomer(cursor.getInt(1)).getName();
+                String to = selectCustomer(cursor.getInt(2)).getName();
+                float amount = cursor.getFloat(3);
+                resultSet.add(new TransactionModel(id, from, to, amount));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
         return resultSet;
     }
 

@@ -30,7 +30,7 @@ public class TransactionHistory extends AppCompatActivity {
     }
 
     private void setAdapter() {
-        TransactionRecyclerAdapter adapter = new TransactionRecyclerAdapter(transactionlist);
+        TransactionRecyclerAdapter adapter = new TransactionRecyclerAdapter(transactionlist, false);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

@@ -17,9 +17,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.bankingapp.databinding.ActivityScrollingBinding;
 
@@ -46,6 +48,7 @@ public class ScrollingActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.userList);
 
         DatabaseHelper db = new DatabaseHelper(ScrollingActivity.this);
+        //db.delete();
         db.initialiseData();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,8 +61,12 @@ public class ScrollingActivity extends AppCompatActivity {
         setAdapter();
     }
 
+    public void onClick(View view){
+        Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
+    }
+
     private void setAdapter() {
-        CustomerRecyclerAdapter adapter = new CustomerRecyclerAdapter(customerList);
+        CustomerRecyclerAdapter adapter = new CustomerRecyclerAdapter(customerList, ScrollingActivity.this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -86,5 +93,11 @@ public class ScrollingActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void popUpAction(int position){
+        Intent intent = new Intent(getApplicationContext(), PopUpActivity.class);
+        intent.putExtra("CustomerId", customerList.get(position));
+        startActivity(intent);
     }
 }

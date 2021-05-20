@@ -17,9 +17,11 @@ import java.util.Locale;
 public class TransactionRecyclerAdapter extends RecyclerView.Adapter<TransactionRecyclerAdapter.MyViewHolder>{
 
     private ArrayList<TransactionModel> transactionList;
+    private boolean customer;
 
-    public TransactionRecyclerAdapter(ArrayList<TransactionModel> transactionList) {
+    public TransactionRecyclerAdapter(ArrayList<TransactionModel> transactionList, boolean customer) {
         this.transactionList = transactionList;
+        this.customer = customer;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
@@ -37,8 +39,14 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
     @NonNull
     @Override
     public TransactionRecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.transaction_item, parent, false);
-        return new TransactionRecyclerAdapter.MyViewHolder(view);
+        View view;
+        if (!customer) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.transaction_item, parent, false);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.transaction_popup, parent, false);
+        }
+        return new MyViewHolder(view);
+
     }
 
     @Override

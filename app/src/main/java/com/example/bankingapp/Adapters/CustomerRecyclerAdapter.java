@@ -8,40 +8,35 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.bankingapp.Activities.ScrollingActivity;
 import com.example.bankingapp.Model.CustomerModel;
 import com.example.bankingapp.R;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class CustomerRecyclerAdapter extends RecyclerView.Adapter<CustomerRecyclerAdapter.MyViewHolder>{
+public class CustomerRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder>{
 
     private ArrayList<CustomerModel> customerList;
+    private ScrollingActivity scrollingActivity;
 
-    public CustomerRecyclerAdapter(ArrayList<CustomerModel> customerList) {
+    public CustomerRecyclerAdapter(ArrayList<CustomerModel> customerList, ScrollingActivity scrollingActivity) {
         this.customerList = customerList;
+        this.scrollingActivity = scrollingActivity;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
-        private TextView username, email, balance;
-
-        public MyViewHolder(final View itemView) {
-            super(itemView);
-            username = itemView.findViewById(R.id.userItem_Username);
-            balance= itemView.findViewById(R.id.userItem_BalanceNum);
-            email = itemView.findViewById(R.id.userItem_Email);
-        }
-    }
 
     @NonNull
     @Override
-    public CustomerRecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull  ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_item, parent, false);
-        return new MyViewHolder(view);
+    public MyViewHolder onCreateViewHolder(@NonNull  ViewGroup parent, int viewType) {
+        View viewItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_item, parent, false);
+        MyViewHolder viewHolder = new MyViewHolder(viewItem);
+        viewHolder.setClickListener((view, position) -> scrollingActivity.popUpAction(position));
+        return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CustomerRecyclerAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         CustomerModel customer = customerList.get(position);
         holder.username.setText(customer.getName());
         holder.email.setText(customer.getEmail());
@@ -52,4 +47,5 @@ public class CustomerRecyclerAdapter extends RecyclerView.Adapter<CustomerRecycl
     public int getItemCount() {
         return customerList.size();
     }
+
 }
