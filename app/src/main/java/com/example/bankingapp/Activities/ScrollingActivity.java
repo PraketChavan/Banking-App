@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.example.bankingapp.Adapters.CustomerRecyclerAdapter;
 import com.example.bankingapp.Database.DatabaseHelper;
+import com.example.bankingapp.Interface.ClickActivity;
 import com.example.bankingapp.Model.CustomerModel;
 import com.example.bankingapp.R;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -27,7 +28,7 @@ import com.example.bankingapp.databinding.ActivityScrollingBinding;
 
 import java.util.ArrayList;
 
-public class ScrollingActivity extends AppCompatActivity {
+public class ScrollingActivity extends AppCompatActivity implements ClickActivity {
 
     private ActivityScrollingBinding binding;
     private ArrayList<CustomerModel> customerList;
@@ -44,11 +45,12 @@ public class ScrollingActivity extends AppCompatActivity {
         CollapsingToolbarLayout toolBarLayout = binding.toolbarLayout;
         toolBarLayout.setTitle(getTitle());
         FloatingActionButton fab = binding.fab;
+        FloatingActionButton transaction = binding.transaction;
 
         recyclerView = findViewById(R.id.userList);
 
         DatabaseHelper db = new DatabaseHelper(ScrollingActivity.this);
-        //db.delete();
+
         db.initialiseData();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,13 +59,18 @@ public class ScrollingActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        transaction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ScrollingActivity.this, SelectCustomerFrom.class);
+                startActivity(intent);
+            }
+        });
         customerList = db.selectAllCustomer();
         setAdapter();
     }
 
-    public void onClick(View view){
-        Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
-    }
 
     private void setAdapter() {
         CustomerRecyclerAdapter adapter = new CustomerRecyclerAdapter(customerList, ScrollingActivity.this);
@@ -95,7 +102,7 @@ public class ScrollingActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void popUpAction(int position){
+    public void nextActivity(int position) {
         Intent intent = new Intent(getApplicationContext(), PopUpActivity.class);
         intent.putExtra("CustomerId", customerList.get(position));
         startActivity(intent);

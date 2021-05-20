@@ -7,7 +7,12 @@ public class TransactionModel {
     private float amount;
 
     public TransactionModel(int id, String from, String to, float amount) {
-        this.id = id;
+        this.from = from;
+        this.to = to;
+        this.amount = amount;
+    }
+
+    public TransactionModel(String from, String to, float amount) {
         this.from = from;
         this.to = to;
         this.amount = amount;

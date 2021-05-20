@@ -9,9 +9,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BankingApp">
-        <activity android:name=".Activities.PopUpActivity"
-            android:theme="@style/Theme.BankingApp.Popup">
+        <activity android:name=".Activities.TransactionSuccessfull"></activity>
+
+        <activity android:name=".Activities.SelectCustomerTo"
+            android:parentActivityName=".Activities.SelectCustomerFrom">
+            <meta-data
+                android:name="android:support.PARENT_ACTIVITY"
+                android:value=".Activities.SelectCustomerFrom"/>
         </activity>
+
+        <activity android:name=".Activities.SelectCustomerFrom"
+            android:parentActivityName=".Activities.ScrollingActivity">
+        <meta-data
+            android:name="android:support.PARENT_ACTIVITY"
+            android:value=".Activities.ScrollingActivity"/>
+        </activity>
+
+        <activity
+            android:name=".Activities.PopUpActivity"
+            android:theme="@style/Theme.BankingApp.Popup" />
         <activity
             android:name=".Activities.TransactionHistory"
             android:parentActivityName=".Activities.ScrollingActivity">

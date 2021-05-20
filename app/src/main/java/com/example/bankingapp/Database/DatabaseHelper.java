@@ -138,6 +138,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    public CustomerModel selectCustomerName(String name){
+        SQLiteDatabase db = getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + CUSTOMER_TABLE + " WHERE " + COLUMN_CUSTOMER_NAME + " = \'" + name + "\';";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        return new CustomerModel(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
+                cursor.getFloat(3));
+    }
+
     public boolean addNewCustomer(CustomerModel customer) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -170,11 +179,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return resultSet;
     }
 
-    public void delete(){
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DELETE FROM CUSTOMER_TABLE WHERE CID < 0");
-        db.execSQL("DELETE FROM TRANSACTION_TABLE WHERE tID < 0");
-    }
     public ArrayList<TransactionModel> selectCustomerTransaction(int customerId) {
         ArrayList<TransactionModel> resultSet = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -197,20 +201,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return resultSet;
     }
 
-    @Deprecated
-    //need to update the add method to the cv
-    //search teh user database to get the id then isert into the transacriton
-    //database
     public boolean addNewTransaction(TransactionModel transaction){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_TRANSACTION_FROM, transaction.getFrom());
-        cv.put(COLUMN_TRANSACTION_TO, transaction.getTo());
+
+        cv.put(COLUMN_TRANSACTION_FROM, selectCustomerName(transaction.getFrom()).getId());
+        cv.put(COLUMN_TRANSACTION_TO, selectCustomerName(transaction.getTo()).getId());
         cv.put(COLUMN_TRANSACTION_AMOUNT, transaction.getAmount());
 
         long insert = db.insert(TRANSACTION_TABLE, null, cv);
-
+        reduceBalance(selectCustomerName(transaction.getFrom()), selectCustomerName(transaction.getTo()),
+                transaction.getAmount());
         return insert != -1;
+    }
+
+    public void reduceBalance(CustomerModel customerModel, CustomerModel customerModel2, float amount) {
+        SQLiteDatabase db  = getWritableDatabase();
+        String query = "UPDATE " + CUSTOMER_TABLE + " SET " + COLUMN_CUSTOMER_BALANCE + " = " + COLUMN_CUSTOMER_BALANCE +
+                " - " + amount + " WHERE " + COLUMN_CUSTOMER_ID + " = " + customerModel.getId() + ";";
+        String query2 = "UPDATE " + CUSTOMER_TABLE + " SET " + COLUMN_CUSTOMER_BALANCE + " = " + COLUMN_CUSTOMER_BALANCE +
+                " + " + amount + " WHERE " + COLUMN_CUSTOMER_ID + " = " + customerModel2.getId() + ";";
+        db.execSQL(query);
+        db.execSQL(query2);
     }
 
 }
