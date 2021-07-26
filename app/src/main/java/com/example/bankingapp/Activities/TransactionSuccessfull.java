@@ -16,6 +16,5 @@ public class TransactionSuccessfull extends AppCompatActivity {
         Handler handler = new Handler();
         handler.postDelayed(()->{ Intent intent = new Intent(this, ScrollingActivity.class);
             startActivity(intent);}, 3000);
-
     }
 }
